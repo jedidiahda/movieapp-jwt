@@ -26,6 +26,12 @@ namespace MovieWebApp.Service
         {
             return _mapper.Map<CustomerDTO>(await _customerRepository.Get(customerId));
         }
+
+        public async Task<CustomerDTO> Get(string email)
+        {
+            return _mapper.Map<CustomerDTO>(await _customerRepository.Get(email));
+        }
+
         public async Task<CustomerDTO> Update(int customerId, CustomerDTO customerDTO)
         {
             var customer = await _customerRepository.Update(customerId, _mapper.Map<Customer>(customerDTO));

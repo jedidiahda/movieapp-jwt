@@ -12,7 +12,7 @@ export class NavigationComponent implements OnInit {
   constructor(public authService:AuthenticationService,public subscriptionService:SubscriptionDataService) { }
 
   ngOnInit(): void {
-    this.getAvailableSubscription();
+    if(this.authService.customerId) this.getAvailableSubscription();
     console.log(this.authService.customerId)
   }
 

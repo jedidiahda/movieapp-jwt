@@ -12,8 +12,9 @@ namespace MovieWebApp.Repository
             _movieDbContext = movieDbContext;
         }
 
-        public async Task<Account> Get(string email,string password) => await _movieDbContext.Accounts.Where(s => s.Email == email && s.Password == password).SingleOrDefaultAsync();
-        
+        public async Task<Account?> Get(string email,string password) => await _movieDbContext.Accounts.Where(s => s.Email == email && s.Password == password).SingleOrDefaultAsync();
+
+        public async Task<Account?> Get(string email) => await _movieDbContext.Accounts.Where(s => s.Email == email).SingleOrDefaultAsync();
 
         public async Task<Account> Save(Account account)
         {

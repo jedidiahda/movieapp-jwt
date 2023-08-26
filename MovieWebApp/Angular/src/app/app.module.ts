@@ -5,6 +5,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ErrorInterceptor } from './helpers/ErrorInterceptor';
 import { JwtModule } from '@auth0/angular-jwt';
 import { JwtInterceptor } from './helpers/JwtInterceptor';
+// import { SocialLoginModule, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
+// import { GoogleLoginProvider } from '@abacritt/angularx-social-login';
+import {
+  SocialLoginModule,
+  SocialAuthServiceConfig,
+  GoogleLoginProvider,
+  GoogleSigninButtonDirective,
+  GoogleSigninButtonModule,
+} from '@abacritt/angularx-social-login';
+
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
@@ -27,6 +37,9 @@ import { PaymentComponent } from './components/payment/payment.component';
 import { CustomerDeliveryComponent } from './components/customer-delivery/customer-delivery.component';
 import { RequestDVDComponent } from './components/request-dvd/request-dvd.component';
 import { CustomerReturnComponent } from './components/customer-return/customer-return.component';
+import { environment } from 'src/environments/environment';
+
+const googleClientId = environment.googleClientId;
 
 @NgModule({
   declarations: [
@@ -59,6 +72,8 @@ import { CustomerReturnComponent } from './components/customer-return/customer-r
       config:{
       }
     }),
+    SocialLoginModule,
+    GoogleSigninButtonModule,
     HttpClientModule,
     RouterModule.forRoot([
       {path:'',component:LandingPageComponent},
@@ -87,7 +102,23 @@ import { CustomerReturnComponent } from './components/customer-return/customer-r
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor,multi:true},
-    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi:true}
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi:true},
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(googleClientId)
+          }
+        ],
+        onError: (err) => {
+          console.error(err);
+        }
+      } as SocialAuthServiceConfig,
+    },
+    GoogleSigninButtonDirective
   ],
   bootstrap: [AppComponent]
 })

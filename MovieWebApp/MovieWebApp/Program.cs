@@ -7,10 +7,11 @@ using MovieWebApp.Models;
 using MovieWebApp.Repository;
 using NLog;
 using NLog.Web;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
+using MovieWebApp.JwtFeatures;
 
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -23,6 +24,11 @@ try
 
     builder.Services.AddDbContext<MovieDbContext>(
         options => options.UseSqlServer(connectionString));
+
+    //builder.Services.AddDbContext<AppIdentityDbContext>(options => options.UseSqlServer(builder.Configuration["ConnectionStrings:MovieDB"]));
+
+    //builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<AppIdentityDbContext>().AddDefaultTokenProviders();
+
 
     //builder.Services.AddDbContext<MovieDbContextDerive>(
     //    options => options.UseSqlServer(connectionString));
@@ -44,6 +50,7 @@ try
     builder.Services.AddScoped<IRequestDVDRepository, RequestDVDRepository>();
     builder.Services.AddScoped<ILoggerManager, LoggerManager>();
     builder.Services.AddTransient<ExceptionMiddleware>();
+    builder.Services.AddScoped<JwtHandler>();
 
     builder.Services.AddControllers()
             .AddNewtonsoftJson(
@@ -55,9 +62,9 @@ try
                           policy =>
                           {
                               policy
-                                .AllowAnyOrigin()
-                                 .AllowAnyMethod()
-                                 .AllowAnyHeader();
+                                    .AllowAnyOrigin()
+                                    .AllowAnyMethod()
+                                    .AllowAnyHeader();
                           });
 
     });
@@ -73,7 +80,8 @@ try
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    }).AddJwtBearer(o =>
+    })
+    .AddJwtBearer(o =>
     {
         o.TokenValidationParameters = new TokenValidationParameters
         {
@@ -86,7 +94,13 @@ try
             ValidateLifetime = false,
             ValidateIssuerSigningKey = true
         };
-    });
+    })
+    .AddGoogle(opts =>
+        {
+            opts.ClientId = builder.Configuration["Google:ClientId"];
+            opts.ClientSecret = builder.Configuration["Google:Secret"];
+            opts.SignInScheme = IdentityConstants.ExternalScheme;
+        });
 
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();

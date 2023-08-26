@@ -8,6 +8,7 @@ import {
 } from '@angular/common/http';
 import { Subscription } from '../models/subscription.model';
 import { CustomerSubscription } from '../models/customer-subscription.model';
+import { AuthenticationService } from './authentication.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,7 @@ export class SubscriptionDataService {
   basedUrl: string = environment.basedUrl + '/subscription';
   subscription: CustomerSubscription = new CustomerSubscription();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private authService:AuthenticationService) {}
 
   createOne(subscription: Subscription): Promise<Subscription | undefined> {
     return this.http

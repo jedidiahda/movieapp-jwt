@@ -1,7 +1,11 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ExternalAuthDto } from 'src/app/models/ExternalAuthDto';
 import { AuthenticationService } from 'src/app/services/authentication.service';
+import { environment } from 'src/environments/environment';
+
 
 @Component({
   selector: 'app-login-form',
@@ -14,7 +18,8 @@ export class LoginFormComponent implements OnInit {
   errorMsg:string='';
 
   constructor(private router:Router,
-    private authService:AuthenticationService) { }
+    private authService:AuthenticationService) { 
+    }
 
   ngOnInit(): void {
     setTimeout(()=>{
@@ -23,11 +28,14 @@ export class LoginFormComponent implements OnInit {
         password:''
       })
     });
+
+
   }
 
   onSubmit():void{
     this.authService.login(this.loginForm.value).then(response =>{
       this.authService.setToken(response.token);
+      this.authService.sendAuthStateChangeNotification(true);
       this.router.navigate(['/home']);
     }).catch(err => console.log(err));
   }
@@ -35,5 +43,4 @@ export class LoginFormComponent implements OnInit {
   onRegisterClick():void{
     this.router.navigate(['/register']);
   }
-
 }

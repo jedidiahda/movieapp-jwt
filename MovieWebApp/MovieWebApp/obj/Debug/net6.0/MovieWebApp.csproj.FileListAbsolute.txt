@@ -535,3 +535,9 @@ C:\Users\jedid\dot NET\movieapp\MovieWebApp\MovieWebApp\bin\Debug\net6.0\AutoMap
 C:\Users\jedid\dot NET\movieapp\MovieWebApp\MovieWebApp\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\jedid\dot NET\movieapp\MovieWebApp\MovieWebApp\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\jedid\dot NET\movieapp\MovieWebApp\MovieWebApp\obj\Debug\net6.0\MovieWebApp.csproj.AssemblyReference.cache
+C:\Users\jedid\dot NET\movieapp\MovieWebApp\MovieWebApp\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.Google.dll
+C:\Users\jedid\dot NET\movieapp\MovieWebApp\MovieWebApp\bin\Debug\net6.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\jedid\dot NET\movieapp\MovieWebApp\MovieWebApp\bin\Debug\net6.0\Google.Apis.dll
+C:\Users\jedid\dot NET\movieapp\MovieWebApp\MovieWebApp\bin\Debug\net6.0\Google.Apis.Auth.PlatformServices.dll
+C:\Users\jedid\dot NET\movieapp\MovieWebApp\MovieWebApp\bin\Debug\net6.0\Google.Apis.Auth.dll
+C:\Users\jedid\dot NET\movieapp\MovieWebApp\MovieWebApp\bin\Debug\net6.0\Google.Apis.Core.dll

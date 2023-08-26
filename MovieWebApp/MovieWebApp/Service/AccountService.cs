@@ -6,6 +6,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
+using MovieWebApp.JwtFeatures;
+using MovieWebApp.Utilities;
 
 namespace MovieWebApp.Service
 {
@@ -15,8 +17,11 @@ namespace MovieWebApp.Service
         private readonly IAccountRepository _accountRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly IMapper _mapper;
+        private readonly JwtHandler _jwtHandler;
 
-        public AccountService(IAccountRepository accountRepository, 
+        public AccountService(
+            JwtHandler jwtHandler,
+            IAccountRepository accountRepository, 
             IConfiguration config,
             ICustomerRepository customerRepository,
             IMapper mapper)
@@ -64,13 +69,57 @@ namespace MovieWebApp.Service
 
         public async Task<string> AuthenticateUser(AccountDTO accountDTO)
         {
-            Account account = await _accountRepository.Get(accountDTO.Email,accountDTO.Password);
+            Account? account = await _accountRepository.Get(accountDTO.Email??"",accountDTO.Password??"");
             if (account == null)
             {
                 return string.Empty;
             }
 
-            return await GenerateJSONWebToken(account);
+            //return await GenerateJSONWebToken(account);
+            return await _jwtHandler.GenerateToken(_mapper.Map<AccountDTO>(account));
+        }
+
+        public async Task<AccountDTO> Get(string email)
+        {
+            return _mapper.Map<AccountDTO>(await _accountRepository.Get(email));
+        }
+
+        public async Task<string> ExternalLogin(ExternalAuthDto externalAuth)
+        {
+            var payload = await _jwtHandler.VerifyGoogleToken(externalAuth);
+            if (payload == null)
+                throw new Exception("Invalid External Authentication.");
+
+            var user = await Get(payload.Email);
+            if (user == null)
+            {
+                user = new AccountDTO
+                {
+                    Email = payload.Email,
+                    Role = Role.USER,
+                    Password = ""
+                };
+
+                await Save(user);
+
+                var customer = new CustomerDTO
+                {
+                    Email = payload.Email,
+                    FirstName = payload.GivenName,
+                    LastName = payload.FamilyName,
+                    Gender = "M",
+                    Address = ""
+                };
+                await _customerRepository.Save(_mapper.Map<Customer>(customer));
+            }
+
+            if (user == null)
+                throw new Exception("Invalid External Authentication.");
+
+            //check for the Locked out account
+
+            var token = await _jwtHandler.GenerateToken(user);
+            return token.ToString();
         }
     }
 }
