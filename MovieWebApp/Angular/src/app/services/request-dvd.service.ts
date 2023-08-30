@@ -12,7 +12,7 @@ export class RequestDVDService {
   constructor(private http: HttpClient) {}
 
   getAll(customerId:string){
-    return this.http.get<RequestedDVD[]>(`${this.basedUrl}/?customerId=${customerId}`).toPromise();
+    return this.http.get<RequestedDVD[]>(`${this.basedUrl}?customerId=${customerId}`).toPromise();
   }
 
   deleteOne(requestId:number){

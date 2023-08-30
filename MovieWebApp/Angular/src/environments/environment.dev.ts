@@ -5,4 +5,5 @@ export const environment = {
   userTokenName:'userJwtToken',
   STATUS_UNAUTHORIZED:401,
   googleClientId:'359190181437-h0ppaoeval47vl6bhg5m6vmldskepah8.apps.googleusercontent.com',
+  facebookClientId:'691974556142935'
 };

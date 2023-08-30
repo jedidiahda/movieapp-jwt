@@ -9,9 +9,12 @@ import { SubscriptionDataService } from 'src/app/services/subscription-data.serv
 })
 export class NavigationComponent implements OnInit {
   isValidSubscription:boolean = false;
-  constructor(public authService:AuthenticationService,public subscriptionService:SubscriptionDataService) { }
+  constructor(public authService:AuthenticationService,public subscriptionService:SubscriptionDataService) { 
+    console.log('navigation constructor')
+  }
 
   ngOnInit(): void {
+    console.log('navigation oninit')
     if(this.authService.customerId) this.getAvailableSubscription();
     console.log(this.authService.customerId)
   }

@@ -91,7 +91,11 @@
               "browserTarget": "Angular:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "sslKey": "./localhost.key",
+            "sslCert": "./localhost.crt"
+          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

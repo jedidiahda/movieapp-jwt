@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Google.Apis.Auth;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using MovieWebApp.DTO;
-using MovieWebApp.Identity;
 using MovieWebApp.Repository;
 using MovieWebApp.Service;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,19 +10,27 @@ using System.Text;
 
 namespace MovieWebApp.JwtFeatures
 {
-    public class JwtHandler
+    public  class JwtHandler
     {
         private readonly IConfiguration _configuration;
         private readonly IConfigurationSection _jwtSettings;
         private readonly IConfigurationSection _goolgeSettings;
         private readonly CustomerService _customerService;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public JwtHandler(IConfiguration configuration,ICustomerRepository customerRepository,IMapper mapper)
+
+
+        public JwtHandler(
+            IHttpClientFactory httpClientFactory,
+            IConfiguration configuration,
+            ICustomerRepository customerRepository,
+            IMapper mapper)
         {
             _customerService = new CustomerService(mapper,customerRepository);
             _configuration = configuration;
             _jwtSettings = _configuration.GetSection("Jwt");
             _goolgeSettings = _configuration.GetSection("Google");
+            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<string> GenerateToken(AccountDTO accountDTO)
@@ -37,24 +43,16 @@ namespace MovieWebApp.JwtFeatures
             return token;
         }
 
-        public async Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(ExternalAuthDto externalAuth)
+        public async Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(ExternalAuthDTO externalAuth)
         {
-            try
+            var settings = new GoogleJsonWebSignature.ValidationSettings()
             {
-                var settings = new GoogleJsonWebSignature.ValidationSettings()
-                {
-                    Audience = new List<string?>() { _goolgeSettings.GetSection("ClientId").Value }
-                };
+                Audience = new List<string?>() { _goolgeSettings.GetSection("ClientId").Value }
+            };
 
-                var payload = await GoogleJsonWebSignature.ValidateAsync(externalAuth.IdToken, settings);
+            var payload = await GoogleJsonWebSignature.ValidateAsync(externalAuth.IdToken, settings);
 
-                return payload;
-            }
-            catch (Exception ex)
-            {
-                //log an exception
-                return null;
-            }
+            return payload;
         }
 
         private SigningCredentials GetSigningCredentials()
@@ -92,6 +90,19 @@ namespace MovieWebApp.JwtFeatures
 
             return tokenOptions;
         }
+
+        public async Task<FacebookTokenValidationResult> ValidateFacebookToken(ExternalAuthDTO request)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            var appAccessTokenResponse = await httpClient.GetFromJsonAsync<FacebookAppAccessTokenResponse>($"https://graph.facebook.com/oauth/access_token?client_id={_configuration["Facebook:AppId"]}&client_secret={_configuration["Facebook:ClientSecret"]}&grant_type=client_credentials");
+            var response =
+                await httpClient.GetFromJsonAsync<FacebookTokenValidationResult>(
+                    $"https://graph.facebook.com/debug_token?input_token={request.IdToken}&access_token={appAccessTokenResponse!.AccessToken}");
+
+
+            return response;
+        }
+
     }
 }
 

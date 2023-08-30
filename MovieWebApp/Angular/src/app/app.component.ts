@@ -10,8 +10,7 @@ export class AppComponent {
   title = 'Movie App';
 
   constructor(private authService: AuthenticationService){
-    if(this.authService.isUserAuthenticated())
-    this.authService.sendAuthStateChangeNotification(true);
+  
   }
 
 }

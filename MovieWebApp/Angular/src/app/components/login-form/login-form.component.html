@@ -1,6 +1,5 @@
-<form class="form-signin" #loginForm="ngForm" (ngSubmit)="onSubmit()">
+<form class="form-signin" #loginForm="ngForm">
   <div class="form-row">
-
     <div class="input-group">
       <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon1">@</span>
@@ -34,29 +33,40 @@
 
     <button
       class="btn btn-primary btn-block"
-      type="submit"
+      type="button"
+      (click)="onSubmit()"
       [disabled]="!loginForm.valid"
     >
       Login
     </button>
     <span>&nbsp;</span>
     <button
-    class="btn btn-primary btn-block"
-    type="button"
-    (click)="onRegisterClick()"
-  >
-    Register
-  </button>
+      class="btn btn-primary btn-block"
+      type="button"
+      (click)="onRegisterClick()"
+    >
+      Register
+    </button>
   </div>
-  <div>
-    <h2>External Providers</h2>
-    <div style="padding: 20px;">
-         <asl-google-signin-button type='icon' size='medium' ></asl-google-signin-button>
-      </div>
-  
-</div>
+
   <div class="error-text" *ngIf="errorMsg != ''">
     {{ errorMsg }}
   </div>
-</form>
 
+  <div>
+    <h2>External Providers</h2>
+    <div style="padding: 20px">
+      <asl-google-signin-button
+        type="icon"
+        size="medium"
+      ></asl-google-signin-button>
+      <span>&nbsp;</span>
+      <button
+        class="btn btn-social-icon btn-facebook mx-1"
+        (click)="signInWithFB()"
+      >
+        <span class="fab fa-facebook"></span>
+      </button>
+    </div>
+  </div>
+</form>

@@ -25,11 +25,6 @@ try
     builder.Services.AddDbContext<MovieDbContext>(
         options => options.UseSqlServer(connectionString));
 
-    //builder.Services.AddDbContext<AppIdentityDbContext>(options => options.UseSqlServer(builder.Configuration["ConnectionStrings:MovieDB"]));
-
-    //builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<AppIdentityDbContext>().AddDefaultTokenProviders();
-
-
     //builder.Services.AddDbContext<MovieDbContextDerive>(
     //    options => options.UseSqlServer(connectionString));
 
@@ -39,6 +34,8 @@ try
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
         options.JsonSerializerOptions.PropertyNamingPolicy = null;
     });
+
+    builder.Services.AddHttpClient();
 
     builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
     builder.Services.AddScoped<IDVDCatalogRepository, DVDCatalogRepository>();
@@ -51,6 +48,8 @@ try
     builder.Services.AddScoped<ILoggerManager, LoggerManager>();
     builder.Services.AddTransient<ExceptionMiddleware>();
     builder.Services.AddScoped<JwtHandler>();
+
+
 
     builder.Services.AddControllers()
             .AddNewtonsoftJson(
@@ -94,13 +93,7 @@ try
             ValidateLifetime = false,
             ValidateIssuerSigningKey = true
         };
-    })
-    .AddGoogle(opts =>
-        {
-            opts.ClientId = builder.Configuration["Google:ClientId"];
-            opts.ClientSecret = builder.Configuration["Google:Secret"];
-            opts.SignInScheme = IdentityConstants.ExternalScheme;
-        });
+    });
 
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();

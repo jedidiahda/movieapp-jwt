@@ -8,6 +8,7 @@ using System.Text;
 using AutoMapper;
 using MovieWebApp.JwtFeatures;
 using MovieWebApp.Utilities;
+using Google.Apis.Auth;
 
 namespace MovieWebApp.Service
 {
@@ -30,6 +31,7 @@ namespace MovieWebApp.Service
             _customerRepository = customerRepository;
             _config = config;
             _mapper = mapper;
+            _jwtHandler = jwtHandler;
         }
 
         public async Task Save(AccountDTO accountDTO)
@@ -72,11 +74,11 @@ namespace MovieWebApp.Service
             Account? account = await _accountRepository.Get(accountDTO.Email??"",accountDTO.Password??"");
             if (account == null)
             {
-                return string.Empty;
+                throw new Exception("Invalid user");
             }
 
-            //return await GenerateJSONWebToken(account);
             return await _jwtHandler.GenerateToken(_mapper.Map<AccountDTO>(account));
+
         }
 
         public async Task<AccountDTO> Get(string email)
@@ -84,18 +86,27 @@ namespace MovieWebApp.Service
             return _mapper.Map<AccountDTO>(await _accountRepository.Get(email));
         }
 
-        public async Task<string> ExternalLogin(ExternalAuthDto externalAuth)
+        public async Task<string> ExternalLogin(ExternalAuthDTO externalAuth)
         {
-            var payload = await _jwtHandler.VerifyGoogleToken(externalAuth);
-            if (payload == null)
-                throw new Exception("Invalid External Authentication.");
+            if (externalAuth.Provider == Provider.FACEBOOK)
+            {
+                var facebook = await _jwtHandler.ValidateFacebookToken(externalAuth);
+                if (facebook == null)
+                    throw new Exception("Invalid External Authentication.");
+            }
+            else
+            {
+                var payload = await _jwtHandler.VerifyGoogleToken(externalAuth);
+                if (payload == null)
+                    throw new Exception("Invalid External Authentication.");
+            }
 
-            var user = await Get(payload.Email);
+            var user = await Get(externalAuth.Email);
             if (user == null)
             {
                 user = new AccountDTO
                 {
-                    Email = payload.Email,
+                    Email = externalAuth.Email,
                     Role = Role.USER,
                     Password = ""
                 };
@@ -104,9 +115,9 @@ namespace MovieWebApp.Service
 
                 var customer = new CustomerDTO
                 {
-                    Email = payload.Email,
-                    FirstName = payload.GivenName,
-                    LastName = payload.FamilyName,
+                    Email = externalAuth.Email,
+                    FirstName = externalAuth.FirstName,
+                    LastName = externalAuth.LastName,
                     Gender = "M",
                     Address = ""
                 };
@@ -120,6 +131,7 @@ namespace MovieWebApp.Service
 
             var token = await _jwtHandler.GenerateToken(user);
             return token.ToString();
+
         }
     }
 }

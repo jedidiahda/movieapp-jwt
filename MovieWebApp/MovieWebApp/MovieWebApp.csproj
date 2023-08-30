@@ -14,11 +14,14 @@
     <Compile Remove="DTO\RequestedDvdAdapter.cs" />
     <Compile Remove="DTO\SubscriptionAdaptor.cs" />
     <Compile Remove="DTO\WatchlistAdapter.cs" />
+    <Compile Remove="JwtFeatures\JwtFacebookHandler.cs" />
+    <Compile Remove="JwtFeatures\JwtGoogleHandler.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Google.Apis.Auth" Version="1.61.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="3.1.32" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.32" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.32" />

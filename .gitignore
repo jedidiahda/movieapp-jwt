@@ -2,12 +2,16 @@
 .vscode
 .metadata
 
+/MovieWebApp/MovieWebApp/logs
+/MovieWebApp/Angular/SSL
 
 node_modules
 packages
 bin
 
+
 */node_modules
 */packages
 */bin
 */debug
+
