@@ -1,7 +1,9 @@
 import { formatDate } from '@angular/common';
+import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { catchError, map, tap } from 'rxjs';
 import { DVDCatalog } from 'src/app/models/dvd-catalog.model';
 import { DvdCatalogService } from 'src/app/services/dvd-catalog.service';
 
@@ -22,6 +24,9 @@ export class DvdCatalogFormComponent implements OnInit {
   dvdCatalogForm!: FormGroup;
   dvdCatalogId!: string;
 
+  progress: number=0;
+  message: string ="";
+
   constructor(
     private dvdCatalogService: DvdCatalogService,
     private activeRoute: ActivatedRoute,
@@ -39,6 +44,7 @@ export class DvdCatalogFormComponent implements OnInit {
       noDisk: new FormControl(0),
       stockQty: new FormControl(0),
       releasedDate: new FormControl(new Date()),
+      fileName: new FormControl('')
     });
 
     if (this.dvdCatalogId) {
@@ -76,10 +82,23 @@ export class DvdCatalogFormComponent implements OnInit {
       language: new FormControl(dvdCatalog.language),
       noDisk: new FormControl(dvdCatalog.noDisk),
       stockQty: new FormControl(dvdCatalog.stockQty),
-      releasedDate: new FormControl(formatDate(new Date(dvdCatalog.releasedDate).toDateString(),"yyyy-MM-dd","en-us"))
+      releasedDate: new FormControl(formatDate(new Date(dvdCatalog.releasedDate).toDateString(),"yyyy-MM-dd","en-us")),
+      fileName: new FormControl('')
     });
-
-
   }
+
+  uploadFile (files:any) {
+    if (files.length === 0) {
+      return;
+    }
+    let fileToUpload = <File>files[0];
+    const formData = new FormData();
+    formData.append('file', fileToUpload, fileToUpload.name);
+    this.dvdCatalogService.uploadPhoto(formData,parseInt(this.dvdCatalogId)).subscribe(e =>{
+      console.log(e);
+      this.message = "uploaded completed";
+    });
+  }
+
 
 }

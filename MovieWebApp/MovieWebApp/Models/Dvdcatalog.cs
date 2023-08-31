@@ -23,6 +23,8 @@ public partial class Dvdcatalog
 
     public bool IsDeleted { get; set; }
 
+    public string? ImageUrl { get; set; }
+
     public virtual ICollection<Dvdcopy> Dvdcopies { get; set; } = new List<Dvdcopy>();
 
     public virtual ICollection<Watchlist> Watchlists { get; set; } = new List<Watchlist>();

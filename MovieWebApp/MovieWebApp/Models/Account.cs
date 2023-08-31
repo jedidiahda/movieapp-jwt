@@ -13,5 +13,7 @@ public partial class Account
 
     public string Role { get; set; } = null!;
 
+    public byte[]? Salt { get; set; }
+
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 }

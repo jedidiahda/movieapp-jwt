@@ -34,6 +34,10 @@ namespace MovieWebApp.Controllers
         {
             try
             {
+                if (accountDTO == null || !ModelState.IsValid)
+                {
+                    return BadRequest("Invalid request");
+                }
                 await _accountService.Save(accountDTO);
                return Ok();
             }catch (Exception ex)

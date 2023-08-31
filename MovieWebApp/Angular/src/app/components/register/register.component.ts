@@ -38,12 +38,14 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.valid) {
       this.authService
       .register(this.registerForm.value)
-      .then((response) => this.createCustomer())
       .catch((err) => (this.errorMsg = err));
+
+      this.createCustomer();
     }
   }
 
   createCustomer(){
+    console.log(this.registerForm.value)
     this.customerService
     .createOne(this.registerForm.value)
     .then((customer) => this.router.navigate(['/login']))

@@ -57,12 +57,13 @@ public partial class MovieDbContext : DbContext
                 .HasColumnName("email");
             entity.Property(e => e.Active).HasColumnName("active");
             entity.Property(e => e.Password)
-                .HasMaxLength(50)
+                .HasMaxLength(1000)
                 .HasColumnName("password");
             entity.Property(e => e.Role)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("role");
+            entity.Property(e => e.Salt).HasColumnName("salt");
         });
 
         modelBuilder.Entity<Customer>(entity =>
@@ -186,6 +187,9 @@ public partial class MovieDbContext : DbContext
             entity.Property(e => e.Genre)
                 .HasMaxLength(200)
                 .HasColumnName("genre");
+            entity.Property(e => e.ImageUrl)
+                .HasMaxLength(100)
+                .HasColumnName("imageUrl");
             entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
             entity.Property(e => e.Language)
                 .HasMaxLength(50)

@@ -3,6 +3,7 @@ import { environment } from 'src/environments/environment';
 import {
   HttpClient,
   HttpErrorResponse,
+  HttpEventType,
   HttpHeaders,
 } from '@angular/common/http';
 import { DVDCatalog } from '../models/dvd-catalog.model';
@@ -91,5 +92,9 @@ export class DvdCatalogService {
     return this.http
       .delete<DVDCopy>(`${this.basedUrl}/dvdcopy/${code}`)
       .toPromise();
+  }
+
+  uploadPhoto(formData:any,dvdId:number){
+    return this.http.post<HttpEventType>(`${this.basedUrl}/upload?DVDCatalogId=${dvdId}`, formData);
   }
 }

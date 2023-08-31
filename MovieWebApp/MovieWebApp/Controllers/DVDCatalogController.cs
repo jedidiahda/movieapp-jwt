@@ -6,6 +6,8 @@ using MovieWebApp.DTO;
 using AutoMapper;
 using MovieWebApp.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using System.Net.Http.Headers;
+using System.IO;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -53,7 +55,7 @@ namespace MovieWebApp.Controllers
             
         }
 
-        [HttpPost]
+        [HttpPost, DisableRequestSizeLimit]
         public async Task<IActionResult> Post(DVDCatalogDTO dVDCatalogDTO)
         {
             if (dVDCatalogDTO == null)
@@ -63,6 +65,23 @@ namespace MovieWebApp.Controllers
 
             try
             {
+                var file = Request.Form.Files[0];
+                var folderName = Path.Combine("Resources", "DVDCatalogs",new Guid().ToString());
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                if (file.Length > 0)
+                {
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    var dbPath = Path.Combine(folderName, fileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    //return Ok(new { dbPath });
+                }
+
+                dVDCatalogDTO.fileName = folderName;
+
                 await _dVDCatalogService.Save(dVDCatalogDTO);
                 return Ok();
             }
@@ -74,6 +93,61 @@ namespace MovieWebApp.Controllers
            
         }
 
+        [HttpPost("upload"), DisableRequestSizeLimit]
+        public async Task<IActionResult> Upload(int DVDCatalogId)
+        {
+            try
+            {
+                var formCollection = await Request.ReadFormAsync();
+                var file = formCollection.Files.First();
+                var folderName = Path.Combine("Resources", "DVDCatalogs");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                if (file.Length > 0)
+                {
+                    var dvd = await _dVDCatalogService.GetById(DVDCatalogId);
+                    if (dvd != null)
+                    {
+                        var existingFile = Path.Combine(pathToSave, dvd.fileName);
+                        if (System.IO.File.Exists(existingFile))
+                        {
+                            System.IO.File.Delete(existingFile);
+                        }
+                    }
+
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    var dbPath = Path.Combine(folderName, fileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    FileInfo fileInfo = new FileInfo(fullPath);
+                    fileName = Guid.NewGuid().ToString() + fileInfo.Extension;
+                    System.IO.File.Move(fullPath, Path.Combine(pathToSave,fileName));
+                    fullPath = Path.Combine(pathToSave, fileName);
+                    var dVDCatalogDTO = new DVDCatalogDTO
+                    {
+                        Id = DVDCatalogId,
+                        fileName = fileName
+                    };
+                    await _dVDCatalogService.UpdateDVDFileUrl(DVDCatalogId, dVDCatalogDTO);
+
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw new InternalServerException(ex.Message);
+            }
+        }
+
+
         [HttpPut("{DVDCatalogId}")]
         public async Task<IActionResult> Put(int DVDCatalogId, DVDCatalogDTO dVDCatalogDTO)
         {
@@ -83,7 +157,7 @@ namespace MovieWebApp.Controllers
             }
 
             try
-            {
+            { 
                 await _dVDCatalogService.Update(DVDCatalogId, dVDCatalogDTO);
                 return Ok();
             }

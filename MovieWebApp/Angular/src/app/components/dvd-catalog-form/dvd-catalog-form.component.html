@@ -2,6 +2,11 @@
 <div class="form-content">
   <form [formGroup]="dvdCatalogForm" (ngSubmit)="onSubmit()">
 
+    <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)" style="display:none;">
+    <button type="button" class="btn btn-success" (click)="file.click()">Upload File</button>
+    <label>{{message}}</label>
+
+<br/>
     <label for="name">Title</label>
     <input type="text" id="title" formControlName="title" class="form-control" required="true"/>
 

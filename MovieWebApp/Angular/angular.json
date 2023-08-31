@@ -93,8 +93,9 @@
           },
           "defaultConfiguration": "development",
           "options": {
-            "sslKey": "./localhost.key",
-            "sslCert": "./localhost.crt"
+            "browserTarget": "build",
+            "sslKey": "./SSL/localhost.key",
+            "sslCert": "./SSL/localhost.crt"
           }
         },
         "extract-i18n": {

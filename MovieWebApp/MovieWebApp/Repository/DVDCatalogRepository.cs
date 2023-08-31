@@ -101,6 +101,16 @@ namespace MovieWebApp.Repository
         }
 
         public async Task<IEnumerable<Dvdcatalog>> GetAll(int catalogId) => await _movieDbContext.Dvdcatalogs.Where(s => s.Id != catalogId).ToListAsync();
-        
+
+        public async Task UpdateDVDFileUrl(int dvdCatalogId, Dvdcatalog dvdcatalog)
+        {
+            var saveDVDCatalog = await _movieDbContext.Dvdcatalogs.Where(s => s.Id == dvdCatalogId).SingleOrDefaultAsync();
+            if (saveDVDCatalog == null)
+            {
+                throw new Exception("DVD catalog not found");
+            }
+            saveDVDCatalog.ImageUrl = dvdcatalog.ImageUrl;
+            await _movieDbContext.SaveChangesAsync();
+        }
     }
 }

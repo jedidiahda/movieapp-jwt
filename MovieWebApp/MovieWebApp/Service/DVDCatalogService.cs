@@ -82,5 +82,10 @@ namespace MovieWebApp.Service
             var dvdCopy = await _dVDCatalogRepository.UpdateDvdCopy(id,_mapper.Map<Dvdcopy>(dvdcopyDTO));
             return _mapper.Map<DvdcopyDTO>(dvdCopy);
         }
+
+        public async Task UpdateDVDFileUrl(int dvdCatalogId, DVDCatalogDTO dvdcatalogDTO)
+        {
+            await _dVDCatalogRepository.UpdateDVDFileUrl(dvdCatalogId,_mapper.Map<Dvdcatalog>(dvdcatalogDTO));
+        }
     }
 }

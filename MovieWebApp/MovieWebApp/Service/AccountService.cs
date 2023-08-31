@@ -36,6 +36,10 @@ namespace MovieWebApp.Service
 
         public async Task Save(AccountDTO accountDTO)
         {
+            byte[] salt = null;
+            var hasPwd = PasswordHelper.HashPasword(accountDTO.Password, out salt);
+            accountDTO.Password = hasPwd;
+            accountDTO.Salt = salt;
             var account = _mapper.Map<Account>(accountDTO);
             await _accountRepository.Save(account);
             //return _mapper.Map<AccountDTO>(account);
@@ -71,10 +75,15 @@ namespace MovieWebApp.Service
 
         public async Task<string> AuthenticateUser(AccountDTO accountDTO)
         {
-            Account? account = await _accountRepository.Get(accountDTO.Email??"",accountDTO.Password??"");
+            Account? account = await _accountRepository.Get(accountDTO.Email??"");
             if (account == null)
             {
                 throw new Exception("Invalid user");
+            }
+
+            if(PasswordHelper.VerifyPassword(accountDTO.Password, account.Password,account.Salt) == false)
+            {
+                throw new Exception("Invalid password");
             }
 
             return await _jwtHandler.GenerateToken(_mapper.Map<AccountDTO>(account));
@@ -133,5 +142,7 @@ namespace MovieWebApp.Service
             return token.ToString();
 
         }
+
+
     }
 }

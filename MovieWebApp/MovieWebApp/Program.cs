@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using MovieWebApp.JwtFeatures;
+using Microsoft.Extensions.FileProviders;
 
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -148,6 +149,13 @@ try
     app.UseHttpsRedirection();
 
     app.UseCors(specificOrigins);
+
+    app.UseStaticFiles();
+    app.UseStaticFiles(new StaticFileOptions()
+    {
+        FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
+        RequestPath = new PathString("/Resources")
+    });
 
     app.UseMiddleware<ExceptionMiddleware>();
 

@@ -7,6 +7,7 @@ namespace MovieWebApp.Repository
         public Task<Dvdcatalog> Save(Dvdcatalog dvdcatalog);
         public Task<Dvdcatalog> GetById(int id);
         public Task<Dvdcatalog> Update(int dvdCatalogId,Dvdcatalog dvdcatalog);
+        public Task UpdateDVDFileUrl(int dvdCatalogId, Dvdcatalog dvdcatalog);
 
         public Task<IEnumerable<Dvdcatalog>> GetAll(string title, int limit, int pageNumber);
         public Task<IEnumerable<Dvdcatalog>> GetAll(int catalogId);

@@ -18,5 +18,7 @@
         public DateTime? ReleasedDate { get; set; }
 
         public bool IsDeleted { get; set; }
+        public IFormFile? files { get; set; }
+        public string? fileName { get; set; }
     }
 }
