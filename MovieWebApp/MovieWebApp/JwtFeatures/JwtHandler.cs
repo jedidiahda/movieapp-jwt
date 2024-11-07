@@ -71,7 +71,7 @@ namespace MovieWebApp.JwtFeatures
                 new Claim(ClaimTypes.Name, accountDTO.Email),
                 new Claim("Active",accountDTO.Active.ToString()),
                 new Claim("Role",accountDTO.Role.ToString()),
-                new Claim("Name",customer.FirstName + " " + customer.LastName),
+                new Claim("Name",accountDTO.FirstName + " " + accountDTO.LastName),
                 new Claim("CustomerId",customer.Id.ToString()),
             };
 

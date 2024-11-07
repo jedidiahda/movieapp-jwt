@@ -16,11 +16,11 @@ namespace MovieWebApp.Service
             _customerRepository = customerRepository;
         }
 
-        public async Task<CustomerDTO> Save(CustomerDTO customerDTO)
+        public async Task<CustomerDTO> Save(CustomerRequestDTO customerRequestDTO)
         {
-            var customer = await _customerRepository.Save(_mapper.Map<Customer>(customerDTO));
-            customerDTO.Id = customer.Id;
-            return customerDTO;
+            var customer = await _customerRepository.Save(_mapper.Map<Customer>(customerRequestDTO));
+            customerRequestDTO.Id = customer.Id;
+            return _mapper.Map<CustomerDTO>(customer);
         }
         public async Task<CustomerDTO> Get(int customerId)
         {

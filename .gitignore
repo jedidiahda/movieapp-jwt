@@ -3,6 +3,7 @@
 .metadata
 
 /MovieWebApp/MovieWebApp/logs
+/MovieWebApp/MovieWebApp/Resources
 /MovieWebApp/Angular/SSL
 
 node_modules

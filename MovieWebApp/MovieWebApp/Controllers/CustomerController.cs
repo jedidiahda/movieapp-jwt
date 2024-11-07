@@ -42,7 +42,7 @@ namespace MovieWebApp.Controllers
 
         // POST api/<CustomerController>
         [HttpPost]
-        public async Task<IActionResult> Post(CustomerDTO customerDTO)
+        public async Task<IActionResult> Post(CustomerRequestDTO customerDTO)
         {
             _logger.LogInfo("Post customer " + customerDTO.ToString());
             try

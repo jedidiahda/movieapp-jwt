@@ -4,9 +4,9 @@ namespace MovieWebApp.Repository
 {
     public interface IAccountRepository
     {
-        public Task<Account> Save(Account account);
-        public Task<Account?> Get(string email,string password);
-        public Task<Account?> Get(string email);
+        Task<Account> Save(Account account);
+        Task<Account?> Get(string email,string password);
+        Task<Account?> Get(string email);
 
     }
 }

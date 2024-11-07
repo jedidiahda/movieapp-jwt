@@ -20,6 +20,7 @@ export class DvdCatalogFormComponent implements OnInit {
   noDisk: number = 0;
   stockQty: number = 0;
   releasedDate: Date = new Date();
+  imageUrl:string='';
   
   dvdCatalogForm!: FormGroup;
   dvdCatalogId!: string;
@@ -44,7 +45,7 @@ export class DvdCatalogFormComponent implements OnInit {
       noDisk: new FormControl(0),
       stockQty: new FormControl(0),
       releasedDate: new FormControl(new Date()),
-      fileName: new FormControl('')
+      imageUrl: new FormControl('')
     });
 
     if (this.dvdCatalogId) {
@@ -83,8 +84,9 @@ export class DvdCatalogFormComponent implements OnInit {
       noDisk: new FormControl(dvdCatalog.noDisk),
       stockQty: new FormControl(dvdCatalog.stockQty),
       releasedDate: new FormControl(formatDate(new Date(dvdCatalog.releasedDate).toDateString(),"yyyy-MM-dd","en-us")),
-      fileName: new FormControl('')
+      imageUrl: new FormControl(dvdCatalog.imageUrl)
     });
+    this.imageUrl = dvdCatalog.imageUrl;
   }
 
   uploadFile (files:any) {

@@ -9,6 +9,7 @@ import { Subject } from 'rxjs';
 import { ExternalAuthDto } from '../models/ExternalAuthDto';
 import { AuthResponseDto } from '../models/AuthResponseDto';
 import { Router } from '@angular/router';
+import { LoginRequestDTO } from '../models/loginRequestDto';
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +37,7 @@ export class AuthenticationService {
       .toPromise();
   }
 
-  login(user: Credentials): Promise<any> {
+  login(user: LoginRequestDTO): Promise<any> {
     this.isExternalAuth = false;
     return this.http
       .post<any>(`${this.basedUrl}/Account/login`, user)
@@ -49,7 +50,6 @@ export class AuthenticationService {
     if(this.isExternalAuth == true){
       this.signOutExternal();
     }
-    
     this.router.navigate(['/home']);
   }
 

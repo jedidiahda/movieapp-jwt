@@ -10,12 +10,6 @@ namespace MovieWebApp.Profiles
         {
             CreateMap<Customer, CustomerDTO>()
                 .ForMember(dest =>
-                    dest.FirstName,
-                    opt => opt.MapFrom(src => src.FirstName))
-                .ForMember(dest =>
-                    dest.LastName,
-                    opt => opt.MapFrom(src => src.LastName))
-                .ForMember(dest =>
                     dest.Gender,
                     opt => opt.MapFrom(src => src.Gender))
                 .ForMember(dest =>

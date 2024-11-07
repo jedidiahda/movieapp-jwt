@@ -18,7 +18,8 @@
   <div class="flex-content">
     <div  *ngFor="let d of dvdCatalogs">
       <div class="flex-item ">
-        {{d.title}}<br/>
+        <div class="header">{{d.title}}</div>
+        <img src="{{baseUrl}}/dvdCatalogs/{{d.imageUrl}}" width="170" height="200">
         <button class="btn btn-primary fa fa-add" (click)="onAddToWatchlist(d.id)">Watchlist</button>
       </div>
     </div>

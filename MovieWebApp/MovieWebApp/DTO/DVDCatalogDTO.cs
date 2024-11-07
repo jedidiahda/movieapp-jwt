@@ -19,6 +19,6 @@
 
         public bool IsDeleted { get; set; }
         public IFormFile? files { get; set; }
-        public string? fileName { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

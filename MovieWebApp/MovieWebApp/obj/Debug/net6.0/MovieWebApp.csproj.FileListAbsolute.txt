@@ -540,5 +540,5 @@ C:\Users\jedid\dot NET\movieapp\MovieWebApp\MovieWebApp\obj\Debug\net6.0\MovieWe
 C:\Users\jedid\dot NET\movieapp\MovieWebApp\MovieWebApp\obj\Debug\net6.0\ref\MovieWebApp.dll
 C:\Users\jedid\dot NET\movieapp\MovieWebApp\MovieWebApp\obj\Debug\net6.0\MovieWebApp.pdb
 C:\Users\jedid\dot NET\movieapp\MovieWebApp\MovieWebApp\obj\Debug\net6.0\MovieWebApp.genruntimeconfig.cache
-C:\Users\jedid\dot NET\movieapp\MovieWebApp\MovieWebApp\obj\Debug\net6.0\MovieWebApp.csproj.AssemblyReference.cache
 C:\Users\jedid\dot NET\movieapp\MovieWebApp\MovieWebApp\bin\Debug\net6.0\ref\MovieWebApp.dll
+C:\Users\jedid\dot NET\movieapp\MovieWebApp\MovieWebApp\obj\Debug\net6.0\MovieWebApp.csproj.AssemblyReference.cache

@@ -72,6 +72,10 @@ button {
   color: #a94442;
 }
 
+.error-text{
+  color: red;
+}
+
 
 .subscription-content{
   display: flex;
@@ -107,9 +111,17 @@ button {
   border: 1px solid #ddd;
   padding: 10px;
   width: 200px;
-  height: 250px;
+  height: 310px;
 }
 
+.flex-item .header{
+  height: 40px;
+  font-weight: bold;
+}
+
+.flex-item img{
+  padding-bottom: 15px;
+}
 
 .flex-header{
   background-color: blue;

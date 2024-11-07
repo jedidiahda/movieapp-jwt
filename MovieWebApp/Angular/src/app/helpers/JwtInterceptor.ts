@@ -16,7 +16,7 @@ export class JwtInterceptor implements HttpInterceptor {
         let currentUser = this.authenticationService.name;
         let token = this.authenticationService.getToken();
 
-        if(this.jwtService.isTokenExpired(token)){
+        if(token && token != '' && this.jwtService.isTokenExpired(token)){
             this.authenticationService.logout();
         }else{
             request = request.clone({

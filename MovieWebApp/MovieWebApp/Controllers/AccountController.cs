@@ -19,16 +19,18 @@ namespace MovieWebApp.Controllers
     {
         private readonly ILoggerManager _logger;
         private readonly AccountService _accountService;
+        private ResponseDTO _responseDTO;
 
         public AccountController(JwtHandler jwtHandler, 
             ILoggerManager logger,IMapper mapper, IAccountRepository accountRepository,
             IConfiguration configuration,ICustomerRepository customerRepository)
         {
+            _responseDTO = new ResponseDTO();
             _logger = logger;
             _accountService = new AccountService(jwtHandler,accountRepository, configuration,customerRepository,mapper);
         }
 
-        // POST api/<AccountController>
+        // Register
         [HttpPost]
         public async Task<IActionResult> Post(AccountDTO accountDTO)
         {
@@ -50,28 +52,31 @@ namespace MovieWebApp.Controllers
         [HttpPost]
         [Route("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(AccountDTO accountDTO)
+        public async Task<ResponseDTO> Login(LoginRequestDTO loginRequestDTO)
         {
             _logger.LogInfo("Account login");
             try
             {
 
-                IActionResult response = Unauthorized();
-                var token = await _accountService.AuthenticateUser(accountDTO);
+                _responseDTO.result = Unauthorized();
+                LoginResponseDTO loginResponseDTO = await _accountService.AuthenticateUser(loginRequestDTO);
 
-                if (token != string.Empty)
+                if(loginResponseDTO.token == String.Empty)
                 {
-                    response = Ok(new { token = token });
+                    _responseDTO.isSuccess = false;
+                    _responseDTO.message = "User not found";
+                    return _responseDTO;
                 }
 
-                return response;
+                _responseDTO.result = loginResponseDTO;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex);
-                throw new InternalServerException(ex.Message);
+                _responseDTO.isSuccess = false;
+                _responseDTO.message = ex.Message;
             }
-
+            return _responseDTO;
         }
 
 

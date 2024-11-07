@@ -36,13 +36,12 @@ namespace MovieWebApp.Service
 
         public async Task Save(AccountDTO accountDTO)
         {
-            byte[] salt = null;
+            byte[]? salt = null;
             var hasPwd = PasswordHelper.HashPasword(accountDTO.Password, out salt);
             accountDTO.Password = hasPwd;
             accountDTO.Salt = salt;
             var account = _mapper.Map<Account>(accountDTO);
             await _accountRepository.Save(account);
-            //return _mapper.Map<AccountDTO>(account);
         }
         private async Task<string> GenerateJSONWebToken(Account account)
         {
@@ -58,7 +57,7 @@ namespace MovieWebApp.Service
                 new Claim(JwtRegisteredClaimNames.Email, account.Email),
                 new Claim("Active",account.Active.ToString()),
                 new Claim("Role",account.Role.ToString()),
-                new Claim("Name",customer.FirstName + ' ' + customer.LastName),
+                new Claim("Name",account.FirstName + ' ' + account.LastName),
                 new Claim("CustomerId",customer.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())}),
                 Expires = DateTime.UtcNow.AddMinutes(15),
@@ -73,21 +72,35 @@ namespace MovieWebApp.Service
             return stringToken;
         }
 
-        public async Task<string> AuthenticateUser(AccountDTO accountDTO)
+        public async Task<LoginResponseDTO> AuthenticateUser(LoginRequestDTO loginRequestDTO)
         {
-            Account? account = await _accountRepository.Get(accountDTO.Email??"");
+            Account? account = await _accountRepository.Get(loginRequestDTO.Email??"");
             if (account == null)
             {
                 throw new Exception("Invalid user");
             }
 
-            if(PasswordHelper.VerifyPassword(accountDTO.Password, account.Password,account.Salt) == false)
+            if(PasswordHelper.VerifyPassword(loginRequestDTO.Password??"", account.Password,account.Salt) == false)
             {
                 throw new Exception("Invalid password");
             }
 
-            return await _jwtHandler.GenerateToken(_mapper.Map<AccountDTO>(account));
+            Customer customer = await _customerRepository.Get(account.Email);
 
+            LoginResponseDTO loginResponseDTO = new LoginResponseDTO
+            {
+                account = new AccountDTO
+                {
+                    Email = account.Email,
+                    FirstName = account.FirstName,
+                    LastName = account.LastName,
+                    Active = account.Active,
+                    Role = account.Role,
+                },
+                token = await _jwtHandler.GenerateToken(_mapper.Map<AccountDTO>(account))
+            };
+
+            return loginResponseDTO;
         }
 
         public async Task<AccountDTO> Get(string email)

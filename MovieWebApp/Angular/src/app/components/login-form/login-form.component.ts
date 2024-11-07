@@ -35,11 +35,10 @@ export class LoginFormComponent implements OnInit {
         password: '',
       });
     });
-    
+
     this.authService.externalAuthService.authState.subscribe((user) => {
       this.user = user;
-      console.log(this.user);
-      if(user){
+      if (user) {
         this.externalLogin(user);
       }
     });
@@ -49,9 +48,13 @@ export class LoginFormComponent implements OnInit {
     this.authService
       .login(this.loginForm.value)
       .then((response) => {
-        this.authService.setToken(response.token);
-        this.router.navigated = false;
-        this.router.navigate(['/home']);
+        if(response.result.token != undefined){
+          this.authService.setToken(response.result.token);
+          this.router.navigated = false;
+          this.router.navigate(['/home']);
+        }else{
+          this.errorMsg = response.message;
+        }
       })
       .catch((err) => console.log(err));
   }
@@ -61,17 +64,23 @@ export class LoginFormComponent implements OnInit {
   }
 
   signInWithGoogle(): void {
-    this.authService.externalAuthService.signIn(GoogleLoginProvider.PROVIDER_ID);
+    this.authService.externalAuthService.signIn(
+      GoogleLoginProvider.PROVIDER_ID
+    );
   }
   signInWithFB(): void {
-    this.authService.externalAuthService.signIn(FacebookLoginProvider.PROVIDER_ID);
+    this.authService.externalAuthService.signIn(
+      FacebookLoginProvider.PROVIDER_ID
+    );
   }
 
   refreshGoogleToken(): void {
-    this.authService.externalAuthService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID);
+    this.authService.externalAuthService.refreshAuthToken(
+      GoogleLoginProvider.PROVIDER_ID
+    );
   }
 
-  externalLogin(user:any){
+  externalLogin(user: any) {
     this.user = user;
     const externalAuth: ExternalAuthDto = {
       provider: this.user.provider,
@@ -86,7 +95,6 @@ export class LoginFormComponent implements OnInit {
         this.authService.setToken(res.token);
         this.router.navigated = false;
         this.router.navigate(['/home']);
-        
       },
       error: (err: HttpErrorResponse) => {
         console.log(err);

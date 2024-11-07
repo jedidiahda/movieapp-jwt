@@ -20,8 +20,9 @@ namespace MovieWebApp.Repository
                        on sts.CustomerSubscriptionId equals cus.Id
                        join c in _movieDbContext.Customers on cus.CustomerId equals c.Id
                        join dvd in _movieDbContext.Dvdcatalogs on sts.DvdcatalogId equals dvd.Id
+                       join u in _movieDbContext.Accounts on c.Email equals u.Email
                        where sts.ReturnedDate == null
-                       select new { sts, c ,dvd}).ToListAsync();
+                       select new { sts, c ,u,dvd}).ToListAsync();
             var dtos = new List<CustomerReturnDTO>();
             foreach (var d in list)
             {
@@ -29,7 +30,7 @@ namespace MovieWebApp.Repository
                 {
                     Code=d.sts.Dvdcode,
                     CustomerId=d.c.Id,
-                    CustomerName=d.c.FirstName + " " + d.c.LastName,
+                    CustomerName=d.u.FirstName + " " + d.u.LastName,
                     CustomerSubscriptionId=d.sts.CustomerSubscriptionId,
                     DvdCatalogId=d.sts.DvdcatalogId,
                     Title=d.dvd.Title,

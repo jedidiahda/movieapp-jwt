@@ -65,22 +65,22 @@ namespace MovieWebApp.Controllers
 
             try
             {
-                var file = Request.Form.Files[0];
-                var folderName = Path.Combine("Resources", "DVDCatalogs",new Guid().ToString());
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                if (file.Length > 0)
-                {
-                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    var fullPath = Path.Combine(pathToSave, fileName);
-                    var dbPath = Path.Combine(folderName, fileName);
-                    using (var stream = new FileStream(fullPath, FileMode.Create))
-                    {
-                        file.CopyTo(stream);
-                    }
-                    //return Ok(new { dbPath });
-                }
+                //var file = Request.Form.Files[0];
+                //var folderName = Path.Combine("Resources", "DVDCatalogs",new Guid().ToString());
+                //var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                //if (file.Length > 0)
+                //{
+                //    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                //    var fullPath = Path.Combine(pathToSave, fileName);
+                //    var dbPath = Path.Combine(folderName, fileName);
+                //    using (var stream = new FileStream(fullPath, FileMode.Create))
+                //    {
+                //        file.CopyTo(stream);
+                //    }
+                //    //return Ok(new { dbPath });
+                //}
 
-                dVDCatalogDTO.fileName = folderName;
+                //dVDCatalogDTO.fileName = folderName;
 
                 await _dVDCatalogService.Save(dVDCatalogDTO);
                 return Ok();
@@ -107,7 +107,7 @@ namespace MovieWebApp.Controllers
                     var dvd = await _dVDCatalogService.GetById(DVDCatalogId);
                     if (dvd != null)
                     {
-                        var existingFile = Path.Combine(pathToSave, dvd.fileName);
+                        var existingFile = Path.Combine(pathToSave, dvd.ImageUrl?? "");
                         if (System.IO.File.Exists(existingFile))
                         {
                             System.IO.File.Delete(existingFile);
@@ -128,7 +128,7 @@ namespace MovieWebApp.Controllers
                     var dVDCatalogDTO = new DVDCatalogDTO
                     {
                         Id = DVDCatalogId,
-                        fileName = fileName
+                        ImageUrl = fileName
                     };
                     await _dVDCatalogService.UpdateDVDFileUrl(DVDCatalogId, dVDCatalogDTO);
 

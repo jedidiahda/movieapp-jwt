@@ -8,8 +8,5 @@ export class DVDCatalog {
   stockQty!: number;
   releasedDate!: Date;
   isDeleted!: boolean;
-
-
-
-
+  imageUrl!: string;
 }

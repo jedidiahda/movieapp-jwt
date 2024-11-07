@@ -13,6 +13,8 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using MovieWebApp.JwtFeatures;
 using Microsoft.Extensions.FileProviders;
+using AutoMapper;
+using MovieWebApp;
 
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -131,6 +133,9 @@ try
     // NLog: Setup NLog for Dependency injection
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
+
+    IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
+    builder.Services.AddSingleton(mapper);
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
     var app = builder.Build();

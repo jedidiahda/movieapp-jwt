@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Profiles\**" />
+    <Content Remove="Profiles\**" />
+    <EmbeddedResource Remove="Profiles\**" />
+    <None Remove="Profiles\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="DTO\CustomerAdapter.cs" />
     <Compile Remove="DTO\CustomerSubscriptionAdapter.cs" />
     <Compile Remove="DTO\DVDCatalogAdapter.cs" />

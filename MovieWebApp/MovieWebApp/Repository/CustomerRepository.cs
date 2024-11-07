@@ -28,8 +28,6 @@ namespace MovieWebApp.Repository
             var saveCustomer = await _movieDbContext.Customers.Where(s => s.Id == customerId).SingleOrDefaultAsync();
             if (saveCustomer == null) return null;
 
-            saveCustomer.FirstName = customer.FirstName;
-            saveCustomer.LastName = customer.LastName;
             saveCustomer.Email = customer.Email;
             saveCustomer.Gender = customer.Gender;
             saveCustomer.Address = customer.Address;

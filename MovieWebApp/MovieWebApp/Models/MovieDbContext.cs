@@ -56,6 +56,12 @@ public partial class MovieDbContext : DbContext
                 .HasMaxLength(100)
                 .HasColumnName("email");
             entity.Property(e => e.Active).HasColumnName("active");
+            entity.Property(e => e.FirstName)
+                .HasMaxLength(100)
+                .HasColumnName("firstName");
+            entity.Property(e => e.LastName)
+                .HasMaxLength(100)
+                .HasColumnName("lastName");
             entity.Property(e => e.Password)
                 .HasMaxLength(1000)
                 .HasColumnName("password");
@@ -77,17 +83,11 @@ public partial class MovieDbContext : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .HasColumnName("email");
-            entity.Property(e => e.FirstName)
-                .HasMaxLength(100)
-                .HasColumnName("firstName");
             entity.Property(e => e.Gender)
                 .HasMaxLength(1)
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("gender");
-            entity.Property(e => e.LastName)
-                .HasMaxLength(100)
-                .HasColumnName("lastName");
 
             entity.HasOne(d => d.EmailNavigation).WithMany(p => p.Customers)
                 .HasForeignKey(d => d.Email)
